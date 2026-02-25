@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int        @id @default(autoincrement())
+  name                String     @db.VarChar(100)
+  email               String     @unique @db.VarChar(100)
+  password            String     @db.VarChar(200)
+  resetToken          String?    @map("reset_token") @db.VarChar(100)
+  resetTokenExpires   DateTime?  @map("reset_token_expires")
+  createdAt           DateTime   @default(now()) @map("created_at")
+  activities          Activity[]
+  items               Item[]
+
+  @@map("users")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  item      String   @db.VarChar(255)
+  data      DateTime @db.Date
+  origem    String   @db.VarChar(100)
+  destino   String   @db.VarChar(100)
+  servidor  String   @db.VarChar(100)
+  patrimonio String?  @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@map("itens")
+}
+
+model Activity {
+  id        Int      @id @default(autoincrement())
+  action    String   @db.VarChar(50) // CREATE, UPDATE, DELETE
+  details   String   @db.Text
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("activities")
+}

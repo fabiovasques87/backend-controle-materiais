@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 // Routes
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/items', itemRoutes);
 
 app.get('/', (req, res) => {
     res.send('API CRUD Simples rodando!');
@@ -33,7 +35,7 @@ initDb()
         console.error('Falha ao inicializar banco de dados:', err);
     })
     .finally(() => {
-        app.listen(port, () => {
+        app.listen(port, '0.0.0.0', () => {
             console.log(`Servidor rodando na porta ${port}`);
         });
     });

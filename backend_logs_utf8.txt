@@ -1,0 +1,60 @@
+﻿[dotenv@17.2.3] injecting env (14) from .env -- tip: ­ƒöæ add access controls to secrets: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ­ƒæÑ sync secrets across teammates & machines: https://dotenvx.com/ops
+--- Diagn├│stico de Conex├úo com o Banco ---
+DB_HOST: localhost
+DB_USER: postgres
+DB_NAME: crud_simples
+DB_PORT: 5432
+DB_PASS configurado: SIM
+-----------------------------------------
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ÔÜÖ´©Å  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ­ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+Iniciando leitura do arquivo init.sql...
+Executando script de inicializa├º├úo do banco...
+Base de Dados conectada com sucesso!
+Script SQL executado com sucesso.
+Banco de dados inicializado (tabelas criadas se necess├írio)
+Servidor rodando na porta 3000
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Update Data in Service: { name: 'Test2', email: 'test2_new@example.com', password: 'PRESENT' }
+Password hashed in service
+Repository Update: {
+  id: '4',
+  name: 'Test2',
+  email: 'test2_new@example.com',
+  password: 'PRESENT'
+}
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Base de Dados conectada com sucesso!
+Update Data in Service: {
+  name: 'fabio vasques',
+  email: 'fabioportovasques321@gmail.com',
+  password: 'PRESENT'
+}
+Password hashed in service
+Repository Update: {
+  id: '1',
+  name: 'fabio vasques',
+  email: 'fabioportovasques321@gmail.com',
+  password: 'PRESENT'
+}
+Base de Dados conectada com sucesso!
+Update Data in Service: {
+  name: 'fabio vasques',
+  email: 'fabioportovasques321@gmail.com',
+  password: 'PRESENT'
+}
+Password hashed in service
+Repository Update: {
+  id: '1',
+  name: 'fabio vasques',
+  email: 'fabioportovasques321@gmail.com',
+  password: 'PRESENT'
+}
+Base de Dados conectada com sucesso!
