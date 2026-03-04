@@ -31,7 +31,7 @@ model Item {
   origem    String   @db.VarChar(100)
   destino   String   @db.VarChar(100)
   servidor  String   @db.VarChar(100)
-  patrimonio String?  @db.VarChar(50)
+  patrimonio String?  @unique @db.VarChar(50)
   createdAt DateTime @default(now()) @map("created_at")
   user      User     @relation(fields: [userId], references: [id])
   userId    Int

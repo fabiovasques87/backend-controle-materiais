@@ -32,38 +32,52 @@ class ItemService {
 
     async create(data, userId) {
         const { item, data: itemDate, origem, destino, servidor, patrimonio } = data;
-        const newItem = await prisma.item.create({
-            data: {
-                item,
-                data: new Date(itemDate),
-                origem,
-                destino,
-                servidor,
-                patrimonio,
-                userId: parseInt(userId)
-            }
-        });
+        try {
+            const newItem = await prisma.item.create({
+                data: {
+                    item,
+                    data: new Date(itemDate),
+                    origem,
+                    destino,
+                    servidor,
+                    patrimonio,
+                    userId: parseInt(userId)
+                }
+            });
 
-        await activityService.log(userId, 'CREATE', { itemId: newItem.id, itemName: newItem.item });
-        return newItem;
+            await activityService.log(userId, 'CREATE', { itemId: newItem.id, itemName: newItem.item });
+            return newItem;
+        } catch (error) {
+            if (error.code === 'P2002') {
+                throw new Error('Este número de patrimônio já está cadastrado em outro item.');
+            }
+            throw error;
+        }
     }
 
     async update(id, data, userId) {
         const { item, data: itemDate, origem, destino, servidor, patrimonio } = data;
-        const updatedItem = await prisma.item.update({
-            where: { id: parseInt(id) },
-            data: {
-                item,
-                data: itemDate ? new Date(itemDate) : undefined,
-                origem,
-                destino,
-                servidor,
-                patrimonio
-            }
-        });
+        try {
+            const updatedItem = await prisma.item.update({
+                where: { id: parseInt(id) },
+                data: {
+                    item,
+                    data: itemDate ? new Date(itemDate) : undefined,
+                    origem,
+                    destino,
+                    servidor,
+                    patrimonio
+                }
+            });
 
-        await activityService.log(userId, 'UPDATE', { itemId: updatedItem.id, itemName: updatedItem.item });
-        return updatedItem;
+            await activityService.log(userId, 'UPDATE', { itemId: updatedItem.id, itemName: updatedItem.item });
+            return updatedItem;
+        } catch (error) {
+            if (error.code === 'P2002') {
+                throw new Error('Este número de patrimônio já está cadastrado em outro item.');
+            }
+            throw error;
+        }
     }
 
     async delete(id, userId) {
