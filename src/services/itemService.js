@@ -41,7 +41,7 @@ class ItemService {
                     destino,
                     servidor,
                     patrimonio,
-                    status: status || 'DEVOLVIDO',
+                    status: status && (status === 'EMPRESTADO' || status === 'DEVOLVIDO') ? status : 'DEVOLVIDO',
                     userId: parseInt(userId)
                 }
             });
@@ -59,17 +59,19 @@ class ItemService {
     async update(id, data, userId) {
         const { item, data: itemDate, origem, destino, servidor, patrimonio, status } = data;
         try {
+            const updateData = {};
+            
+            if (item !== undefined) updateData.item = item;
+            if (itemDate) updateData.data = new Date(itemDate);
+            if (origem !== undefined) updateData.origem = origem;
+            if (destino !== undefined) updateData.destino = destino;
+            if (servidor !== undefined) updateData.servidor = servidor;
+            if (patrimonio !== undefined) updateData.patrimonio = patrimonio;
+            if (status !== undefined) updateData.status = status;
+            
             const updatedItem = await prisma.item.update({
                 where: { id: parseInt(id) },
-                data: {
-                    item,
-                    data: itemDate ? new Date(itemDate) : undefined,
-                    origem,
-                    destino,
-                    servidor,
-                    patrimonio,
-                    status
-                }
+                data: updateData
             });
 
             await activityService.log(userId, 'UPDATE', { itemId: updatedItem.id, itemName: updatedItem.item });
