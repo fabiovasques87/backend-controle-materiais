@@ -31,7 +31,7 @@ class ItemService {
     }
 
     async create(data, userId) {
-        const { item, data: itemDate, origem, destino, servidor, patrimonio } = data;
+        const { item, data: itemDate, origem, destino, servidor, patrimonio, status } = data;
         try {
             const newItem = await prisma.item.create({
                 data: {
@@ -41,6 +41,7 @@ class ItemService {
                     destino,
                     servidor,
                     patrimonio,
+                    status: status || 'DEVOLVIDO',
                     userId: parseInt(userId)
                 }
             });
@@ -56,7 +57,7 @@ class ItemService {
     }
 
     async update(id, data, userId) {
-        const { item, data: itemDate, origem, destino, servidor, patrimonio } = data;
+        const { item, data: itemDate, origem, destino, servidor, patrimonio, status } = data;
         try {
             const updatedItem = await prisma.item.update({
                 where: { id: parseInt(id) },
@@ -66,7 +67,8 @@ class ItemService {
                     origem,
                     destino,
                     servidor,
-                    patrimonio
+                    patrimonio,
+                    status
                 }
             });
 
