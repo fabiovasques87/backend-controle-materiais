@@ -46,7 +46,11 @@ class ItemService {
                 }
             });
 
-            await activityService.log(userId, 'CREATE', { itemId: newItem.id, itemName: newItem.item });
+            // registra todos os valores do novo item
+            await activityService.log(userId, 'CREATE', {
+                itemId: newItem.id,
+                newValues: newItem
+            });
             return newItem;
         } catch (error) {
             if (error.code === 'P2002') {
@@ -59,22 +63,57 @@ class ItemService {
     async update(id, data, userId) {
         const { item, data: itemDate, origem, destino, servidor, patrimonio, status } = data;
         try {
+            const existing = await prisma.item.findUnique({ where: { id: parseInt(id) } });
+            if (!existing) throw new Error('Item not found');
+
             const updateData = {};
-            
-            if (item !== undefined) updateData.item = item;
-            if (itemDate) updateData.data = new Date(itemDate);
-            if (origem !== undefined) updateData.origem = origem;
-            if (destino !== undefined) updateData.destino = destino;
-            if (servidor !== undefined) updateData.servidor = servidor;
-            if (patrimonio !== undefined) updateData.patrimonio = patrimonio;
-            if (status !== undefined) updateData.status = status;
-            
+            const changes = {};
+
+            if (item !== undefined && item !== existing.item) {
+                updateData.item = item;
+                changes.item = { before: existing.item, after: item };
+            }
+            if (itemDate && new Date(itemDate).toISOString() !== existing.data.toISOString()) {
+                updateData.data = new Date(itemDate);
+                changes.data = { before: existing.data, after: new Date(itemDate) };
+            }
+            if (origem !== undefined && origem !== existing.origem) {
+                updateData.origem = origem;
+                changes.origem = { before: existing.origem, after: origem };
+            }
+            if (destino !== undefined && destino !== existing.destino) {
+                updateData.destino = destino;
+                changes.destino = { before: existing.destino, after: destino };
+            }
+            if (servidor !== undefined && servidor !== existing.servidor) {
+                updateData.servidor = servidor;
+                changes.servidor = { before: existing.servidor, after: servidor };
+            }
+            if (patrimonio !== undefined && patrimonio !== existing.patrimonio) {
+                updateData.patrimonio = patrimonio;
+                changes.patrimonio = { before: existing.patrimonio, after: patrimonio };
+            }
+            if (status !== undefined && status !== existing.status &&
+                (status === 'EMPRESTADO' || status === 'DEVOLVIDO')) {
+                updateData.status = status;
+                changes.status = { before: existing.status, after: status };
+            }
+
+            if (Object.keys(updateData).length === 0) {
+                throw new Error('Nenhum campo válido para atualizar');
+            }
+
             const updatedItem = await prisma.item.update({
                 where: { id: parseInt(id) },
                 data: updateData
             });
 
-            await activityService.log(userId, 'UPDATE', { itemId: updatedItem.id, itemName: updatedItem.item });
+            await activityService.log(userId, 'UPDATE', { 
+                itemId: updatedItem.id, 
+                itemName: updatedItem.item,
+                servidor: updatedItem.servidor,
+                changes 
+            });
             return updatedItem;
         } catch (error) {
             if (error.code === 'P2002') {
@@ -92,7 +131,11 @@ class ItemService {
             where: { id: parseInt(id) }
         });
 
-        await activityService.log(userId, 'DELETE', { itemId: id, itemName: itemToDelete.item });
+        // log com valores excluídos
+        await activityService.log(userId, 'DELETE', {
+            itemId: id,
+            deletedValues: itemToDelete
+        });
     }
 }
 
